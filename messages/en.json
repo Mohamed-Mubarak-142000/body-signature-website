@@ -10,7 +10,9 @@
     "contact": "Contact",
     "shop": "Shop",
     "cart": "Cart",
+    "wishlist": "Wishlist",
     "account": "Account",
+    "signIn": "Sign in",
     "menu": "Menu",
     "allServices": "View all services"
   },
@@ -36,6 +38,9 @@
     "servicesEyebrow": "What we offer",
     "servicesTitle": "Five ways we care for you",
     "servicesSubtitle": "From medical guidance to beauty rituals, each category is built around a distinct expertise.",
+    "newArrivalsEyebrow": "Fresh in",
+    "newArrivalsTitle": "New arrivals",
+    "newArrivalsSubtitle": "The latest additions to our shop, curated by Body Signature.",
     "ctaTitle": "Ready to begin your journey?",
     "ctaBody": "Tell us a little about what you're looking for, and we'll help you find the right path.",
     "ctaButton": "Contact us"
@@ -241,6 +246,11 @@
       "submit": "Send message",
       "sending": "Sending…",
       "note": "This form is for enquiries only; we do not process bookings or payments online.",
+      "success": {
+        "title": "Message sent",
+        "description": "Thank you for reaching out. Our team will get back to you within one business day.",
+        "close": "Close"
+      },
       "errors": {
         "nameRequired": "Please enter your name.",
         "emailRequired": "Please enter your email address.",
@@ -263,6 +273,10 @@
   "auth": {
     "orDivider": "or",
     "googleCta": "Continue with Google",
+    "panelTagline": "A signature approach to health, beauty & balance — now saved to your account.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "redirecting": "Redirecting…",
     "register": {
       "eyebrow": "Create an account",
       "title": "Join Body Signature",
@@ -349,11 +363,14 @@
       "signedInAs": "Signed in as",
       "signOut": "Sign out",
       "notSignedIn": "You're not signed in.",
+      "notSignedInDescription": "Sign in to view your saved orders, bookings, and account details.",
       "signInCta": "Sign in",
       "ordersTitle": "Your orders",
       "noOrders": "No orders yet.",
+      "noOrdersDescription": "Your past and current orders will show up here once you place one.",
       "bookingsTitle": "Your bookings",
       "noBookings": "No bookings yet.",
+      "noBookingsDescription": "Appointments you request will show up here once you book one.",
       "orderNumber": "Order",
       "status": "Status",
       "total": "Total",
@@ -365,25 +382,83 @@
     "title": "Shop",
     "subtitle": "Products to support your routine, curated by Body Signature.",
     "allCategories": "All",
+    "filterBy": "Categories",
     "empty": "No products in this category yet.",
+    "emptyDescription": "Check back soon, or browse another category.",
+    "noResults": "No products match your search.",
+    "noResultsDescription": "Try a different search term or clear your filters.",
     "outOfStock": "Out of stock",
+    "onlyLeft": "Only {count} left",
+    "viewProduct": "View product",
+    "relatedProducts": "You may also like",
+    "searchPlaceholder": "Search products…",
+    "resultsCount": "{count} products",
+    "sort": {
+      "label": "Sort by",
+      "newest": "Newest",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "nameAsc": "Name: A–Z"
+    },
+    "priceFilter": {
+      "label": "Price",
+      "min": "Min",
+      "max": "Max",
+      "apply": "Apply"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {current} of {total}"
+    },
     "product": {
       "addToCart": "Add to cart",
       "addingToCart": "Adding…",
       "addedToCart": "Added to cart",
       "addToWishlist": "Add to wishlist",
       "addedToWishlist": "Added to wishlist",
+      "increaseQuantity": "Increase quantity",
+      "decreaseQuantity": "Decrease quantity",
       "backToShop": "Back to shop",
-      "signInRequired": "Please sign in to add items to your cart."
+      "signInRequired": "Please sign in to add items to your cart.",
+      "category": "Category",
+      "sku": "SKU",
+      "options": "Options"
     },
     "cart": {
       "title": "Your cart",
       "empty": "Your cart is empty.",
+      "emptyDescription": "Browse the shop and add something you'll love.",
       "browseCta": "Browse products",
       "quantity": "Qty",
       "remove": "Remove",
       "total": "Total",
       "checkout": "Proceed to checkout"
+    },
+    "wishlist": {
+      "title": "Your wishlist",
+      "empty": "Your wishlist is empty.",
+      "emptyDescription": "Save products you love here to find them again easily.",
+      "browseCta": "Browse products",
+      "remove": "Remove"
+    },
+    "reviews": {
+      "title": "Reviews",
+      "empty": "No reviews yet — be the first to share your thoughts.",
+      "averageLabel": "{average} out of 5 ({count} reviews)",
+      "yourRating": "Your rating",
+      "comment": "Your review",
+      "commentPlaceholder": "What did you think of this product?",
+      "submit": "Submit review",
+      "sending": "Submitting…",
+      "success": "Thanks — your review has been posted.",
+      "signInPrompt": "Sign in to leave a review.",
+      "signInCta": "Sign in",
+      "errors": {
+        "ratingRequired": "Please choose a rating.",
+        "commentRequired": "Please write a short review.",
+        "submitFailed": "Couldn't submit your review. Please try again."
+      }
     },
     "checkout": {
       "eyebrow": "Checkout",

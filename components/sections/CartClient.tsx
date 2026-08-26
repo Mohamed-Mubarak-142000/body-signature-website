@@ -1,10 +1,13 @@
 "use client";
 
+import { ShoppingCart } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Link, useRouter } from "@/i18n/navigation";
+import { emitCartUpdated } from "@/lib/cart-events";
 import { productName } from "@/lib/shop-types";
 
 type CartItem = {
@@ -32,6 +35,7 @@ export function CartClient({ items }: { items: CartItem[] }) {
       body: JSON.stringify({ quantity }),
     });
     setBusyId(null);
+    emitCartUpdated();
     router.refresh();
   }
 
@@ -39,19 +43,23 @@ export function CartClient({ items }: { items: CartItem[] }) {
     setBusyId(itemId);
     await fetch(`/api/backend/cart/items/${itemId}`, { method: "DELETE" });
     setBusyId(null);
+    emitCartUpdated();
     router.refresh();
   }
 
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl border border-border/70 bg-card p-8 text-center">
-        <p className="text-muted-foreground">{t("empty")}</p>
-        <Link
-          href="/shop"
-          className="mt-4 inline-block text-sm font-medium text-gold-600 hover:text-gold-700"
-        >
-          {t("browseCta")}
-        </Link>
+      <div className="rounded-2xl border border-border/70 bg-card">
+        <EmptyState
+          icon={ShoppingCart}
+          title={t("empty")}
+          description={t("emptyDescription")}
+          action={
+            <Button size="lg" className="mt-2" nativeButton={false} render={<Link href="/shop" />}>
+              {t("browseCta")}
+            </Button>
+          }
+        />
       </div>
     );
   }

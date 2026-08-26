@@ -6,6 +6,7 @@ export type Product = {
   slug: string;
   sku: string;
   price: string | number;
+  compareAtPrice?: string | number | null;
   stockQuantity: number;
   isActive: boolean;
   categoryId: string;
@@ -39,6 +40,12 @@ export function productDescription(
     product.translations.find((t) => t.locale === "en")?.description ??
     ""
   );
+}
+
+export const LOW_STOCK_THRESHOLD = 20;
+
+export function hasDiscount(product: Pick<Product, "price" | "compareAtPrice">): boolean {
+  return product.compareAtPrice != null && Number(product.compareAtPrice) > Number(product.price);
 }
 
 export function categoryName(category: Pick<Category, "translations">, locale: string): string {

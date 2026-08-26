@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "@/i18n/navigation";
+import { emitCartUpdated } from "@/lib/cart-events";
 
 type Status = "idle" | "loading" | "done" | "error";
 
@@ -27,6 +28,7 @@ export function ProductActions({ productId, inStock }: { productId: string; inSt
       return;
     }
     status(res.ok ? "done" : "error");
+    if (res.ok && path.includes("/cart")) emitCartUpdated();
   }
 
   return (

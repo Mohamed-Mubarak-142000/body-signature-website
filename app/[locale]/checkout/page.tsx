@@ -1,7 +1,10 @@
+import { LogIn, ShoppingCart } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { CheckoutForm } from "@/components/sections/CheckoutForm";
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import { auth } from "@/lib/auth";
 import { backendFetch } from "@/lib/backend";
 import { Link } from "@/i18n/navigation";
@@ -21,14 +24,17 @@ export default async function CheckoutPage() {
 
   if (!session?.user) {
     return (
-      <section className="mx-auto flex max-w-md flex-col px-6 py-16 text-center">
-        <p className="text-muted-foreground">{tAccount("notSignedIn")}</p>
-        <Link
-          href="/login"
-          className="mt-4 inline-block rounded-none bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/80"
-        >
-          {tAccount("signInCta")}
-        </Link>
+      <section className="mx-auto max-w-md px-6 py-16">
+        <EmptyState
+          icon={LogIn}
+          title={tAccount("notSignedIn")}
+          description={tAccount("notSignedInDescription")}
+          action={
+            <Button size="lg" className="mt-2" nativeButton={false} render={<Link href="/login" />}>
+              {tAccount("signInCta")}
+            </Button>
+          }
+        />
       </section>
     );
   }
@@ -40,11 +46,17 @@ export default async function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <section className="mx-auto flex max-w-md flex-col px-6 py-16 text-center">
-        <p className="text-muted-foreground">{tCart("empty")}</p>
-        <Link href="/shop" className="mt-4 text-sm font-medium text-gold-600 hover:text-gold-700">
-          {tCart("browseCta")}
-        </Link>
+      <section className="mx-auto max-w-md px-6 py-16">
+        <EmptyState
+          icon={ShoppingCart}
+          title={tCart("empty")}
+          description={tCart("emptyDescription")}
+          action={
+            <Button size="lg" className="mt-2" nativeButton={false} render={<Link href="/shop" />}>
+              {tCart("browseCta")}
+            </Button>
+          }
+        />
       </section>
     );
   }

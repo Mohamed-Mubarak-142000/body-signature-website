@@ -1,10 +1,13 @@
+import { CalendarClock, LogIn, Package } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { auth } from "@/lib/auth";
 import { backendFetch } from "@/lib/backend";
 import { SignOutButton } from "@/components/sections/SignOutButton";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Link } from "@/i18n/navigation";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -43,14 +46,17 @@ export default async function AccountPage() {
 
   if (!session?.user) {
     return (
-      <section className="mx-auto flex max-w-md flex-col px-6 py-16 text-center">
-        <p className="text-muted-foreground">{t("notSignedIn")}</p>
-        <Link
-          href="/login"
-          className="mt-4 inline-block rounded-none bg-primary px-6 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/80"
-        >
-          {t("signInCta")}
-        </Link>
+      <section className="mx-auto max-w-md px-6 py-16">
+        <EmptyState
+          icon={LogIn}
+          title={t("notSignedIn")}
+          description={t("notSignedInDescription")}
+          action={
+            <Button size="lg" className="mt-2" nativeButton={false} render={<Link href="/login" />}>
+              {t("signInCta")}
+            </Button>
+          }
+        />
       </section>
     );
   }
@@ -75,7 +81,12 @@ export default async function AccountPage() {
         </CardHeader>
         <CardContent>
           {orders.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("noOrders")}</p>
+            <EmptyState
+              icon={Package}
+              title={t("noOrders")}
+              description={t("noOrdersDescription")}
+              className="py-8"
+            />
           ) : (
             <ul className="space-y-3">
               {orders.map((order) => (
@@ -101,7 +112,12 @@ export default async function AccountPage() {
         </CardHeader>
         <CardContent>
           {bookings.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("noBookings")}</p>
+            <EmptyState
+              icon={CalendarClock}
+              title={t("noBookings")}
+              description={t("noBookingsDescription")}
+              className="py-8"
+            />
           ) : (
             <ul className="space-y-3">
               {bookings.map((booking) => (

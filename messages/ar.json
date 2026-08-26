@@ -10,7 +10,9 @@
     "contact": "تواصل معنا",
     "shop": "المتجر",
     "cart": "السلة",
+    "wishlist": "المفضلة",
     "account": "حسابي",
+    "signIn": "تسجيل الدخول",
     "menu": "القائمة",
     "allServices": "عرض كل الخدمات"
   },
@@ -36,6 +38,9 @@
     "servicesEyebrow": "ماذا نقدم",
     "servicesTitle": "خمس طرق نهتم بها بك",
     "servicesSubtitle": "من الإرشاد الطبي إلى طقوس الجمال، كل فئة مبنية حول خبرة متخصصة مستقلة.",
+    "newArrivalsEyebrow": "وصل حديثًا",
+    "newArrivalsTitle": "أحدث المنتجات",
+    "newArrivalsSubtitle": "أحدث الإضافات إلى متجرنا، مختارة من Body Signature.",
     "ctaTitle": "هل أنت مستعد لبدء رحلتك؟",
     "ctaBody": "أخبرنا قليلاً عمّا تبحث عنه، وسنساعدك في اختيار المسار المناسب.",
     "ctaButton": "تواصل معنا"
@@ -241,6 +246,11 @@
       "submit": "إرسال الرسالة",
       "sending": "جارٍ الإرسال...",
       "note": "هذا النموذج مخصص للاستفسارات فقط؛ نحن لا نعالج الحجوزات أو المدفوعات عبر الإنترنت.",
+      "success": {
+        "title": "تم إرسال الرسالة",
+        "description": "شكرًا لتواصلك معنا. سيرد عليك فريقنا خلال يوم عمل واحد.",
+        "close": "إغلاق"
+      },
       "errors": {
         "nameRequired": "يرجى إدخال اسمك.",
         "emailRequired": "يرجى إدخال بريدك الإلكتروني.",
@@ -263,6 +273,10 @@
   "auth": {
     "orDivider": "أو",
     "googleCta": "المتابعة باستخدام جوجل",
+    "panelTagline": "توقيعك الخاص للصحة والجمال والتوازن — محفوظ الآن في حسابك.",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "redirecting": "جارٍ التحويل…",
     "register": {
       "eyebrow": "إنشاء حساب",
       "title": "انضم إلى Body Signature",
@@ -349,11 +363,14 @@
       "signedInAs": "تم تسجيل الدخول باسم",
       "signOut": "تسجيل الخروج",
       "notSignedIn": "أنت غير مسجّل الدخول.",
+      "notSignedInDescription": "سجّل الدخول لعرض طلباتك وحجوزاتك وبيانات حسابك.",
       "signInCta": "تسجيل الدخول",
       "ordersTitle": "طلباتك",
       "noOrders": "لا توجد طلبات بعد.",
+      "noOrdersDescription": "ستظهر طلباتك السابقة والحالية هنا بمجرد أن تقوم بطلب.",
       "bookingsTitle": "حجوزاتك",
       "noBookings": "لا توجد حجوزات بعد.",
+      "noBookingsDescription": "ستظهر المواعيد التي تطلبها هنا بمجرد أن تقوم بالحجز.",
       "orderNumber": "الطلب",
       "status": "الحالة",
       "total": "الإجمالي",
@@ -365,25 +382,83 @@
     "title": "المتجر",
     "subtitle": "منتجات تدعم روتينك اليومي، مختارة من Body Signature.",
     "allCategories": "الكل",
+    "filterBy": "التصنيفات",
     "empty": "لا توجد منتجات في هذا التصنيف بعد.",
+    "emptyDescription": "تفقّد الصفحة قريبًا، أو تصفّح تصنيفًا آخر.",
+    "noResults": "لا توجد منتجات مطابقة لبحثك.",
+    "noResultsDescription": "جرّب كلمة بحث مختلفة أو امسح الفلاتر.",
     "outOfStock": "غير متوفر",
+    "onlyLeft": "متبقٍ {count} فقط",
+    "viewProduct": "عرض المنتج",
+    "relatedProducts": "قد يعجبك أيضًا",
+    "searchPlaceholder": "ابحث عن منتجات…",
+    "resultsCount": "{count} منتج",
+    "sort": {
+      "label": "ترتيب حسب",
+      "newest": "الأحدث",
+      "priceAsc": "السعر: من الأقل للأعلى",
+      "priceDesc": "السعر: من الأعلى للأقل",
+      "nameAsc": "الاسم: أ-ي"
+    },
+    "priceFilter": {
+      "label": "السعر",
+      "min": "الأقل",
+      "max": "الأعلى",
+      "apply": "تطبيق"
+    },
+    "pagination": {
+      "previous": "السابق",
+      "next": "التالي",
+      "page": "صفحة {current} من {total}"
+    },
     "product": {
       "addToCart": "أضف إلى السلة",
       "addingToCart": "جارٍ الإضافة...",
       "addedToCart": "تمت الإضافة إلى السلة",
       "addToWishlist": "أضف إلى المفضلة",
       "addedToWishlist": "تمت الإضافة إلى المفضلة",
+      "increaseQuantity": "زيادة الكمية",
+      "decreaseQuantity": "إنقاص الكمية",
       "backToShop": "العودة إلى المتجر",
-      "signInRequired": "يرجى تسجيل الدخول لإضافة منتجات إلى سلتك."
+      "signInRequired": "يرجى تسجيل الدخول لإضافة منتجات إلى سلتك.",
+      "category": "التصنيف",
+      "sku": "رمز المنتج",
+      "options": "الخيارات"
     },
     "cart": {
       "title": "سلتك",
       "empty": "سلتك فارغة.",
+      "emptyDescription": "تصفّح المتجر وأضف شيئًا يعجبك.",
       "browseCta": "تصفح المنتجات",
       "quantity": "الكمية",
       "remove": "إزالة",
       "total": "الإجمالي",
       "checkout": "المتابعة للدفع"
+    },
+    "wishlist": {
+      "title": "المفضلة",
+      "empty": "قائمة المفضلة فارغة.",
+      "emptyDescription": "احفظ المنتجات التي تعجبك هنا لتجدها بسهولة لاحقًا.",
+      "browseCta": "تصفح المنتجات",
+      "remove": "إزالة"
+    },
+    "reviews": {
+      "title": "التقييمات",
+      "empty": "لا توجد تقييمات بعد — كن أول من يشارك رأيه.",
+      "averageLabel": "{average} من 5 ({count} تقييم)",
+      "yourRating": "تقييمك",
+      "comment": "تقييمك المكتوب",
+      "commentPlaceholder": "ما رأيك في هذا المنتج؟",
+      "submit": "إرسال التقييم",
+      "sending": "جارٍ الإرسال...",
+      "success": "شكرًا — تم نشر تقييمك.",
+      "signInPrompt": "سجّل الدخول لترك تقييم.",
+      "signInCta": "تسجيل الدخول",
+      "errors": {
+        "ratingRequired": "يرجى اختيار تقييم.",
+        "commentRequired": "يرجى كتابة تقييم قصير.",
+        "submitFailed": "تعذّر إرسال تقييمك. يرجى المحاولة مرة أخرى."
+      }
     },
     "checkout": {
       "eyebrow": "إتمام الطلب",

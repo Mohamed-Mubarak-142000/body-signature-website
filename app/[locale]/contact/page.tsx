@@ -4,6 +4,20 @@ import { getTranslations } from "next-intl/server";
 import { Reveal } from "@/components/effects/Reveal";
 import { ContactForm } from "@/components/sections/ContactForm";
 import { SectionHeader } from "@/components/sections/SectionHeader";
+import { backendFetch } from "@/lib/backend";
+
+type ContactSettings = {
+  contactPhone: string | null;
+  contactEmail: string | null;
+  contactAddress: string | null;
+  businessHours: string | null;
+};
+
+async function getContactSettings(): Promise<ContactSettings> {
+  const res = await backendFetch("/api/settings");
+  if (!res.ok) return { contactPhone: null, contactEmail: null, contactAddress: null, businessHours: null };
+  return res.json();
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("contact");
@@ -12,6 +26,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ContactPage() {
   const t = await getTranslations("contact");
+  // Staff edit these from the dashboard's Settings page — the translation
+  // strings only serve as a fallback if the backend is unreachable.
+  const settings = await getContactSettings();
 
   return (
     <section className="mx-auto max-w-5xl px-6 pt-10 pb-20">
@@ -37,19 +54,19 @@ export default async function ContactPage() {
           <dl className="mt-6 space-y-4 text-sm">
             <div>
               <dt className="text-muted-foreground">{t("phoneTitle")}</dt>
-              <dd className="mt-1 text-foreground">{t("phoneValue")}</dd>
+              <dd className="mt-1 text-foreground">{settings.contactPhone ?? t("phoneValue")}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">{t("emailTitle")}</dt>
-              <dd className="mt-1 text-foreground">{t("email")}</dd>
+              <dd className="mt-1 text-foreground">{settings.contactEmail ?? t("email")}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">{t("addressTitle")}</dt>
-              <dd className="mt-1 text-foreground">{t("address")}</dd>
+              <dd className="mt-1 text-foreground">{settings.contactAddress ?? t("address")}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">{t("hoursTitle")}</dt>
-              <dd className="mt-1 text-foreground">{t("hours")}</dd>
+              <dd className="mt-1 text-foreground">{settings.businessHours ?? t("hours")}</dd>
             </div>
           </dl>
         </Reveal>

@@ -2,20 +2,23 @@ import { LogIn } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { CartClient } from "@/components/sections/CartClient";
+import { WishlistClient } from "@/components/sections/WishlistClient";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { auth } from "@/lib/auth";
 import { backendFetch } from "@/lib/backend";
 import { Link } from "@/i18n/navigation";
+import type { Product } from "@/lib/shop-types";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("shop.cart");
+  const t = await getTranslations("shop.wishlist");
   return { title: t("title") };
 }
 
-export default async function CartPage() {
-  const t = await getTranslations("shop.cart");
+type WishlistItem = { id: string; productId: string; product: Product };
+
+export default async function WishlistPage() {
+  const t = await getTranslations("shop.wishlist");
   const tAccount = await getTranslations("auth.account");
   const session = await auth();
 
@@ -36,13 +39,14 @@ export default async function CartPage() {
     );
   }
 
-  const res = await backendFetch("/api/cart");
-  const cart = res.ok ? await res.json() : { items: [] };
+  const res = await backendFetch("/api/wishlist");
+  const wishlist = res.ok ? await res.json() : { items: [] };
+  const items: WishlistItem[] = wishlist.items ?? [];
 
   return (
-    <section className="mx-auto max-w-3xl px-6 pt-10 pb-20">
+    <section className="mx-auto max-w-6xl px-6 pt-10 pb-20">
       <h1 className="mb-8 font-heading text-3xl text-foreground">{t("title")}</h1>
-      <CartClient items={cart.items} />
+      <WishlistClient items={items} />
     </section>
   );
 }

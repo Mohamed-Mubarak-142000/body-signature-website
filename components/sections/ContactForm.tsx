@@ -1,10 +1,12 @@
 "use client";
 
+import { CheckCircle2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,6 +16,7 @@ type FormErrors = Partial<Record<"name" | "email" | "phone" | "message", string>
 export function ContactForm() {
   const t = useTranslations("contact.form");
   const locale = useLocale();
+  const formRef = useRef<HTMLFormElement>(null);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
@@ -68,6 +71,7 @@ export function ContactForm() {
       });
       if (!res.ok) throw new Error("submit failed");
       setSubmitted(true);
+      formRef.current?.reset();
     } catch {
       setSubmitError(true);
     } finally {
@@ -75,19 +79,8 @@ export function ContactForm() {
     }
   }
 
-  if (submitted) {
-    return (
-      <div
-        role="status"
-        className="rounded-2xl border border-gold-300/60 bg-gold-100/40 p-8 text-center text-foreground"
-      >
-        {t("submit")} ✓
-      </div>
-    );
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
       <div className="grid gap-6 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="name">{t("name")}</Label>
@@ -170,6 +163,21 @@ export function ContactForm() {
       </Button>
 
       <p className="text-xs text-muted-foreground">{t("note")}</p>
+
+      <Dialog open={submitted} onOpenChange={setSubmitted}>
+        <DialogContent showCloseButton={false}>
+          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-gold-100 text-gold-600">
+            <CheckCircle2 className="size-8" />
+          </div>
+          <DialogTitle className="mt-4">{t("success.title")}</DialogTitle>
+          <DialogDescription>{t("success.description")}</DialogDescription>
+          <DialogClose
+            render={<Button size="lg" className="mt-6 w-full" />}
+          >
+            {t("success.close")}
+          </DialogClose>
+        </DialogContent>
+      </Dialog>
     </form>
   );
 }

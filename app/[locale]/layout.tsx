@@ -3,6 +3,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { Cormorant_Garamond, Inter, Noto_Kufi_Arabic } from "next/font/google";
 import { notFound } from "next/navigation";
+import { SessionProvider } from "next-auth/react";
 import type { ReactNode } from "react";
 
 import { PageLoader } from "@/components/effects/PageLoader";
@@ -11,6 +12,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { WaveDivider } from "@/components/layout/WaveDivider";
 import { routing } from "@/i18n/routing";
+import { auth } from "@/lib/auth";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -64,6 +66,7 @@ export default async function LocaleLayout({
 
   const dir = locale === "ar" ? "rtl" : "ltr";
   const isArabic = locale === "ar";
+  const session = await auth();
 
   return (
     <html
@@ -79,14 +82,16 @@ export default async function LocaleLayout({
           : "var(--font-cormorant)",
       }}
     >
-      <body className="min-h-screen bg-background font-sans text-foreground antialiased">
+      <body className="flex min-h-screen flex-col bg-background font-sans text-foreground antialiased">
         <NextIntlClientProvider>
-          <PageLoader />
-          <ScrollProgress />
-          <Header />
-          <main>{children}</main>
-          <WaveDivider />
-          <Footer />
+          <SessionProvider session={session}>
+            <PageLoader />
+            <ScrollProgress />
+            <Header />
+            <main className="flex-1">{children}</main>
+            <WaveDivider />
+            <Footer />
+          </SessionProvider>
         </NextIntlClientProvider>
       </body>
     </html>

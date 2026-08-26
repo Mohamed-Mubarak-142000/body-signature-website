@@ -8,16 +8,18 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useRouter } from "@/i18n/navigation";
 
 type FormErrors = Partial<Record<"email" | "password", string>>;
 
-export function LoginForm() {
+export function LoginForm({ googleEnabled }: { googleEnabled: boolean }) {
   const t = useTranslations("auth.login");
   const tAuth = useTranslations("auth");
   const router = useRouter();
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
+  const [googleSubmitting, setGoogleSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
 
   const schema = z.object({
@@ -59,8 +61,15 @@ export function LoginForm() {
     router.push("/account");
   }
 
+  function handleGoogle() {
+    setGoogleSubmitting(true);
+    void signIn("google");
+  }
+
+  const busy = submitting || googleSubmitting;
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div className="space-y-2">
         <Label htmlFor="email">{t("email")}</Label>
         <Input
@@ -70,43 +79,49 @@ export function LoginForm() {
           placeholder={t("emailPlaceholder")}
           autoComplete="email"
           aria-invalid={Boolean(errors.email)}
+          className="h-11 px-3"
         />
         {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="password">{t("password")}</Label>
-        <Input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           placeholder={t("passwordPlaceholder")}
           autoComplete="current-password"
           aria-invalid={Boolean(errors.password)}
+          className="h-11"
         />
         {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
       </div>
 
       {submitError && <p className="text-sm text-destructive">{t("errors.invalidCredentials")}</p>}
 
-      <Button type="submit" size="lg" className="w-full" disabled={submitting}>
+      <Button type="submit" size="lg" className="h-11 w-full text-sm" disabled={busy}>
         {submitting ? t("sending") : t("submit")}
       </Button>
 
-      <div className="relative py-2 text-center text-xs text-muted-foreground">
-        <span className="bg-card px-2">{tAuth("orDivider")}</span>
-        <div className="absolute inset-x-0 top-1/2 -z-10 h-px bg-border" />
-      </div>
+      {googleEnabled && (
+        <>
+          <div className="relative py-2 text-center text-xs text-muted-foreground">
+            <span className="bg-card px-2">{tAuth("orDivider")}</span>
+            <div className="absolute inset-x-0 top-1/2 -z-10 h-px bg-border" />
+          </div>
 
-      <Button
-        type="button"
-        variant="outline"
-        size="lg"
-        className="w-full"
-        onClick={() => signIn("google")}
-      >
-        {tAuth("googleCta")}
-      </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            className="h-11 w-full text-sm"
+            disabled={busy}
+            onClick={handleGoogle}
+          >
+            {googleSubmitting ? tAuth("redirecting") : tAuth("googleCta")}
+          </Button>
+        </>
+      )}
     </form>
   );
 }

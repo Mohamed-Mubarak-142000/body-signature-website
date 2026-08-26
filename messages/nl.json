@@ -10,7 +10,9 @@
     "contact": "Contact",
     "shop": "Shop",
     "cart": "Winkelwagen",
+    "wishlist": "Verlanglijst",
     "account": "Account",
+    "signIn": "Inloggen",
     "menu": "Menu",
     "allServices": "Bekijk alle diensten"
   },
@@ -36,6 +38,9 @@
     "servicesEyebrow": "Wat wij bieden",
     "servicesTitle": "Vijf manieren waarop wij voor u zorgen",
     "servicesSubtitle": "Van medisch advies tot schoonheidsrituelen, elke categorie is opgebouwd rond een eigen expertise.",
+    "newArrivalsEyebrow": "Nieuw binnen",
+    "newArrivalsTitle": "Nieuwe producten",
+    "newArrivalsSubtitle": "De nieuwste toevoegingen aan onze shop, samengesteld door Body Signature.",
     "ctaTitle": "Klaar om te beginnen?",
     "ctaBody": "Vertel ons kort waar u naar op zoek bent, en wij helpen u de juiste weg te vinden.",
     "ctaButton": "Neem contact op"
@@ -241,6 +246,11 @@
       "submit": "Bericht versturen",
       "sending": "Verzenden…",
       "note": "Dit formulier is uitsluitend voor vragen; wij verwerken geen boekingen of betalingen online.",
+      "success": {
+        "title": "Bericht verzonden",
+        "description": "Bedankt voor uw bericht. Ons team reageert binnen één werkdag.",
+        "close": "Sluiten"
+      },
       "errors": {
         "nameRequired": "Vul uw naam in.",
         "emailRequired": "Vul uw e-mailadres in.",
@@ -263,6 +273,10 @@
   "auth": {
     "orDivider": "of",
     "googleCta": "Doorgaan met Google",
+    "panelTagline": "Een persoonlijke aanpak voor gezondheid, schoonheid & balans — nu bewaard in uw account.",
+    "showPassword": "Wachtwoord tonen",
+    "hidePassword": "Wachtwoord verbergen",
+    "redirecting": "Doorverwijzen…",
     "register": {
       "eyebrow": "Account aanmaken",
       "title": "Word lid van Body Signature",
@@ -349,11 +363,14 @@
       "signedInAs": "Ingelogd als",
       "signOut": "Uitloggen",
       "notSignedIn": "U bent niet ingelogd.",
+      "notSignedInDescription": "Log in om uw bestellingen, boekingen en accountgegevens te bekijken.",
       "signInCta": "Inloggen",
       "ordersTitle": "Uw bestellingen",
       "noOrders": "Nog geen bestellingen.",
+      "noOrdersDescription": "Uw eerdere en huidige bestellingen verschijnen hier zodra u er een plaatst.",
       "bookingsTitle": "Uw boekingen",
       "noBookings": "Nog geen boekingen.",
+      "noBookingsDescription": "Afspraken die u aanvraagt verschijnen hier zodra u er een boekt.",
       "orderNumber": "Bestelling",
       "status": "Status",
       "total": "Totaal",
@@ -365,25 +382,83 @@
     "title": "Shop",
     "subtitle": "Producten die uw routine ondersteunen, samengesteld door Body Signature.",
     "allCategories": "Alle",
+    "filterBy": "Categorieën",
     "empty": "Nog geen producten in deze categorie.",
+    "emptyDescription": "Kom binnenkort terug, of bekijk een andere categorie.",
+    "noResults": "Geen producten gevonden voor uw zoekopdracht.",
+    "noResultsDescription": "Probeer een andere zoekterm of wis uw filters.",
     "outOfStock": "Niet op voorraad",
+    "onlyLeft": "Nog maar {count} op voorraad",
+    "viewProduct": "Product bekijken",
+    "relatedProducts": "Dit vindt u misschien ook leuk",
+    "searchPlaceholder": "Zoek producten…",
+    "resultsCount": "{count} producten",
+    "sort": {
+      "label": "Sorteren op",
+      "newest": "Nieuwste",
+      "priceAsc": "Prijs: laag naar hoog",
+      "priceDesc": "Prijs: hoog naar laag",
+      "nameAsc": "Naam: A-Z"
+    },
+    "priceFilter": {
+      "label": "Prijs",
+      "min": "Min",
+      "max": "Max",
+      "apply": "Toepassen"
+    },
+    "pagination": {
+      "previous": "Vorige",
+      "next": "Volgende",
+      "page": "Pagina {current} van {total}"
+    },
     "product": {
       "addToCart": "In winkelwagen",
       "addingToCart": "Toevoegen…",
       "addedToCart": "Toegevoegd aan winkelwagen",
       "addToWishlist": "Aan verlanglijst toevoegen",
       "addedToWishlist": "Toegevoegd aan verlanglijst",
+      "increaseQuantity": "Aantal verhogen",
+      "decreaseQuantity": "Aantal verlagen",
       "backToShop": "Terug naar shop",
-      "signInRequired": "Log in om producten aan uw winkelwagen toe te voegen."
+      "signInRequired": "Log in om producten aan uw winkelwagen toe te voegen.",
+      "category": "Categorie",
+      "sku": "SKU",
+      "options": "Opties"
     },
     "cart": {
       "title": "Uw winkelwagen",
       "empty": "Uw winkelwagen is leeg.",
+      "emptyDescription": "Bekijk de shop en voeg iets toe dat u leuk vindt.",
       "browseCta": "Producten bekijken",
       "quantity": "Aantal",
       "remove": "Verwijderen",
       "total": "Totaal",
       "checkout": "Afrekenen"
+    },
+    "wishlist": {
+      "title": "Uw verlanglijst",
+      "empty": "Uw verlanglijst is leeg.",
+      "emptyDescription": "Bewaar hier producten die u leuk vindt, zodat u ze makkelijk terugvindt.",
+      "browseCta": "Producten bekijken",
+      "remove": "Verwijderen"
+    },
+    "reviews": {
+      "title": "Reviews",
+      "empty": "Nog geen reviews — wees de eerste die iets deelt.",
+      "averageLabel": "{average} van 5 ({count} reviews)",
+      "yourRating": "Uw beoordeling",
+      "comment": "Uw review",
+      "commentPlaceholder": "Wat vond u van dit product?",
+      "submit": "Review plaatsen",
+      "sending": "Bezig met plaatsen…",
+      "success": "Bedankt — uw review is geplaatst.",
+      "signInPrompt": "Log in om een review achter te laten.",
+      "signInCta": "Inloggen",
+      "errors": {
+        "ratingRequired": "Kies een beoordeling.",
+        "commentRequired": "Schrijf een korte review.",
+        "submitFailed": "Uw review kon niet worden geplaatst. Probeer het opnieuw."
+      }
     },
     "checkout": {
       "eyebrow": "Afrekenen",

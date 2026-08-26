@@ -1,8 +1,9 @@
 "use client";
 
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Heart, Menu, ShoppingBag, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import { useEffect, useRef, useState } from "react";
 
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
@@ -21,16 +22,45 @@ import {
   serviceCategories,
 } from "@/content/services";
 import { Link } from "@/i18n/navigation";
+import { CART_UPDATED_EVENT } from "@/lib/cart-events";
 import { cn } from "@/lib/utils";
 
 export function Header() {
   const t = useTranslations("nav");
   const tServices = useTranslations("services");
   const brand = useTranslations("brand");
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+  const accountHref = session?.user ? "/account" : "/login";
+  const accountLabel = session?.user ? t("account") : t("signIn");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const headerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadCartCount() {
+      if (!userId) {
+        if (!cancelled) setCartCount(0);
+        return;
+      }
+      const res = await fetch("/api/backend/cart");
+      if (!res.ok || cancelled) return;
+      const data = await res.json();
+      const items: { quantity: number }[] = data.items ?? [];
+      if (!cancelled) setCartCount(items.reduce((sum, item) => sum + item.quantity, 0));
+    }
+
+    loadCartCount();
+    window.addEventListener(CART_UPDATED_EVENT, loadCartCount);
+    return () => {
+      cancelled = true;
+      window.removeEventListener(CART_UPDATED_EVENT, loadCartCount);
+    };
+  }, [userId]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 8);
@@ -109,15 +139,28 @@ export function Header() {
         <div className="flex items-center gap-4">
           <Link
             href="/cart"
-            className="hidden text-base font-medium text-muted-foreground transition-colors hover:text-foreground md:block"
+            aria-label={t("cart")}
+            className="relative hidden text-muted-foreground transition-colors hover:text-foreground md:block"
           >
-            {t("cart")}
+            <ShoppingBag className="size-5" />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground rtl:-left-2 ltr:-right-2">
+                {cartCount > 9 ? "9+" : cartCount}
+              </span>
+            )}
           </Link>
           <Link
-            href="/account"
+            href="/wishlist"
+            aria-label={t("wishlist")}
+            className="hidden text-muted-foreground transition-colors hover:text-foreground md:block"
+          >
+            <Heart className="size-5" />
+          </Link>
+          <Link
+            href={accountHref}
             className="hidden text-base font-medium text-muted-foreground transition-colors hover:text-foreground md:block"
           >
-            {t("account")}
+            {accountLabel}
           </Link>
           <LanguageSwitcher className="hidden md:flex" />
 
@@ -272,12 +315,24 @@ export function Header() {
                     nativeButton={false}
                     render={
                       <Link
-                        href="/account"
+                        href="/wishlist"
                         className="text-lg font-medium text-foreground transition-colors hover:text-primary"
                       />
                     }
                   >
-                    {t("account")}
+                    {t("wishlist")}
+                  </SheetClose>
+
+                  <SheetClose
+                    nativeButton={false}
+                    render={
+                      <Link
+                        href={accountHref}
+                        className="text-lg font-medium text-foreground transition-colors hover:text-primary"
+                      />
+                    }
+                  >
+                    {accountLabel}
                   </SheetClose>
                 </nav>
 

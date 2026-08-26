@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "@/i18n/navigation";
+import { emitCartUpdated } from "@/lib/cart-events";
 
 type FormErrors = Partial<Record<"shippingAddress" | "phone", string>>;
 
@@ -58,6 +59,7 @@ export function CheckoutForm({ total }: { total: number }) {
       if (!res.ok) throw new Error("checkout failed");
       const order = await res.json();
       setOrderNumber(order.orderNumber);
+      emitCartUpdated();
     } catch {
       setSubmitError(true);
     } finally {
