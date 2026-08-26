@@ -24,12 +24,12 @@ export function ShopSortSelect({ filters }: { filters: ShopFilters }) {
   }
 
   return (
-    <label className="flex items-center gap-2 text-sm text-muted-foreground">
+    <label className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground">
       <span className="hidden sm:inline">{t("sort.label")}</span>
       <select
         value={filters.sort ?? "newest"}
         onChange={onChange}
-        className="border border-border/70 bg-background px-3 py-2 text-sm text-foreground focus:border-gold-500 focus:outline-none"
+        className="min-w-0 max-w-40 truncate border border-border/70 bg-background px-3 py-2 text-sm text-foreground focus:border-gold-500 focus:outline-none"
       >
         {SORT_OPTIONS.map((option) => (
           <option key={option} value={option}>

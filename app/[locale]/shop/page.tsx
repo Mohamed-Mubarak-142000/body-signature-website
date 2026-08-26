@@ -150,10 +150,10 @@ export default async function ShopPage({
   );
 
   return (
-    <section className="mx-auto max-w-6xl px-6 pt-10 pb-20">
+    <section className="mx-auto max-w-7xl px-6 pt-10 pb-20">
       <SectionHeader eyebrow={t("eyebrow")} subtitle={t("subtitle")} className="mb-10" />
 
-      <div className="mb-8 flex items-center justify-between gap-4 md:justify-end">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-3 md:flex-nowrap md:justify-end">
         <Dialog>
           <DialogTrigger
             render={<Button variant="outline" size="sm" className="md:hidden" />}
@@ -167,7 +167,7 @@ export default async function ShopPage({
           </DialogContent>
         </Dialog>
 
-        <div className="flex items-center gap-4">
+        <div className="flex min-w-0 items-center gap-3">
           <p className="text-sm whitespace-nowrap text-muted-foreground">
             {t("resultsCount", { count: filtered.length })}
           </p>
@@ -189,7 +189,7 @@ export default async function ShopPage({
             />
           ) : (
             <>
-              <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {paginated.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
