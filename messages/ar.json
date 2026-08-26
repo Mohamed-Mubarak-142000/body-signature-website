@@ -418,6 +418,8 @@
       "addedToCart": "تمت الإضافة إلى السلة",
       "addToWishlist": "أضف إلى المفضلة",
       "addedToWishlist": "تمت الإضافة إلى المفضلة",
+      "removedFromWishlist": "تمت الإزالة من المفضلة",
+      "actionFailed": "حدث خطأ ما. حاول مرة أخرى.",
       "increaseQuantity": "زيادة الكمية",
       "decreaseQuantity": "إنقاص الكمية",
       "backToShop": "العودة إلى المتجر",

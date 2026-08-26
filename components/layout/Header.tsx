@@ -22,7 +22,7 @@ import {
   serviceCategories,
 } from "@/content/services";
 import { Link } from "@/i18n/navigation";
-import { CART_UPDATED_EVENT } from "@/lib/cart-events";
+import { useCart } from "@/lib/cart-context";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -30,37 +30,14 @@ export function Header() {
   const tServices = useTranslations("services");
   const brand = useTranslations("brand");
   const { data: session } = useSession();
-  const userId = session?.user?.id;
   const accountHref = session?.user ? "/account" : "/login";
   const accountLabel = session?.user ? t("account") : t("signIn");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  const { lines } = useCart();
+  const cartCount = lines.reduce((sum, line) => sum + line.quantity, 0);
   const headerRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadCartCount() {
-      if (!userId) {
-        if (!cancelled) setCartCount(0);
-        return;
-      }
-      const res = await fetch("/api/backend/cart");
-      if (!res.ok || cancelled) return;
-      const data = await res.json();
-      const items: { quantity: number }[] = data.items ?? [];
-      if (!cancelled) setCartCount(items.reduce((sum, item) => sum + item.quantity, 0));
-    }
-
-    loadCartCount();
-    window.addEventListener(CART_UPDATED_EVENT, loadCartCount);
-    return () => {
-      cancelled = true;
-      window.removeEventListener(CART_UPDATED_EVENT, loadCartCount);
-    };
-  }, [userId]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 8);

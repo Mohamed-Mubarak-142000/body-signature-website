@@ -1,56 +1,60 @@
 "use client";
 
+import { Loader2, Minus, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { useRouter } from "@/i18n/navigation";
-import { emitCartUpdated } from "@/lib/cart-events";
-
-type Status = "idle" | "loading" | "done" | "error";
+import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 
 export function ProductActions({ productId, inStock }: { productId: string; inStock: boolean }) {
   const t = useTranslations("shop.product");
-  const router = useRouter();
-  const [cartStatus, setCartStatus] = useState<Status>("idle");
-  const [wishlistStatus, setWishlistStatus] = useState<Status>("idle");
+  const cart = useCart();
+  const wishlist = useWishlist();
 
-  async function post(path: string, status: (s: Status) => void) {
-    status("loading");
-    const res = await fetch(path, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ productId, quantity: 1 }),
-    });
-
-    if (res.status === 403 || res.status === 401) {
-      router.push(`/login`);
-      return;
-    }
-    status(res.ok ? "done" : "error");
-    if (res.ok && path.includes("/cart")) emitCartUpdated();
-  }
+  const line = cart.getLine(productId);
+  const cartBusy = cart.isPending(productId);
+  const wishlistBusy = wishlist.isPending(productId);
+  const saved = wishlist.has(productId);
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row">
-      <Button
-        size="lg"
-        disabled={!inStock || cartStatus === "loading"}
-        onClick={() => post("/api/backend/cart", setCartStatus)}
-      >
-        {cartStatus === "loading"
-          ? t("addingToCart")
-          : cartStatus === "done"
-            ? t("addedToCart")
-            : t("addToCart")}
-      </Button>
+      {line ? (
+        <div className="flex h-11 items-center justify-between rounded-none border border-gold-600/40 bg-gold-50 px-2 text-gold-700 sm:w-40">
+          <button
+            type="button"
+            onClick={() => cart.setQuantity(productId, line.quantity - 1)}
+            aria-label={t("decreaseQuantity")}
+            disabled={cartBusy}
+            className="flex size-8 items-center justify-center rounded-full transition-colors hover:bg-gold-100 disabled:opacity-60"
+          >
+            {cartBusy ? <Loader2 className="size-4 animate-spin" /> : <Minus className="size-4" />}
+          </button>
+          <span className="text-sm font-semibold">{line.quantity}</span>
+          <button
+            type="button"
+            onClick={() => cart.setQuantity(productId, line.quantity + 1)}
+            aria-label={t("increaseQuantity")}
+            disabled={cartBusy}
+            className="flex size-8 items-center justify-center rounded-full transition-colors hover:bg-gold-100 disabled:opacity-60"
+          >
+            <Plus className="size-4" />
+          </button>
+        </div>
+      ) : (
+        <Button size="lg" disabled={!inStock || cartBusy} onClick={() => cart.addToCart(productId)}>
+          {cartBusy && <Loader2 className="size-4 animate-spin" />}
+          {cartBusy ? t("addingToCart") : t("addToCart")}
+        </Button>
+      )}
       <Button
         variant="outline"
         size="lg"
-        disabled={wishlistStatus === "loading"}
-        onClick={() => post("/api/backend/wishlist", setWishlistStatus)}
+        disabled={wishlistBusy}
+        onClick={() => wishlist.toggle(productId)}
       >
-        {wishlistStatus === "done" ? t("addedToWishlist") : t("addToWishlist")}
+        {wishlistBusy && <Loader2 className="size-4 animate-spin" />}
+        {saved ? t("addedToWishlist") : t("addToWishlist")}
       </Button>
     </div>
   );

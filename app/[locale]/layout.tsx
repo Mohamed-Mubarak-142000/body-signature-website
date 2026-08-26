@@ -11,8 +11,11 @@ import { ScrollProgress } from "@/components/effects/ScrollProgress";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { WaveDivider } from "@/components/layout/WaveDivider";
+import { Toaster } from "@/components/ui/toast";
 import { routing } from "@/i18n/routing";
 import { auth } from "@/lib/auth";
+import { CartProvider } from "@/lib/cart-context";
+import { WishlistProvider } from "@/lib/wishlist-context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -85,12 +88,17 @@ export default async function LocaleLayout({
       <body className="flex min-h-screen flex-col bg-background font-sans text-foreground antialiased">
         <NextIntlClientProvider>
           <SessionProvider session={session}>
-            <PageLoader />
-            <ScrollProgress />
-            <Header />
-            <main className="flex-1">{children}</main>
-            <WaveDivider />
-            <Footer />
+            <CartProvider>
+              <WishlistProvider>
+                <PageLoader />
+                <ScrollProgress />
+                <Header />
+                <main className="flex-1">{children}</main>
+                <WaveDivider />
+                <Footer />
+                <Toaster />
+              </WishlistProvider>
+            </CartProvider>
           </SessionProvider>
         </NextIntlClientProvider>
       </body>

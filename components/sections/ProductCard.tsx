@@ -1,11 +1,11 @@
 "use client";
 
-import { ArrowRight, Heart, ShoppingBag } from "lucide-react";
+import { ArrowRight, Heart, Loader2, Minus, Plus, ShoppingBag } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useState, type MouseEvent } from "react";
+import type { MouseEvent } from "react";
 
-import { Link, useRouter } from "@/i18n/navigation";
-import { emitCartUpdated } from "@/lib/cart-events";
+import { Link } from "@/i18n/navigation";
+import { useCart } from "@/lib/cart-context";
 import {
   LOW_STOCK_THRESHOLD,
   hasDiscount,
@@ -13,16 +13,14 @@ import {
   productName,
   type Product,
 } from "@/lib/shop-types";
+import { useWishlist } from "@/lib/wishlist-context";
 import { cn } from "@/lib/utils";
-
-type ActionStatus = "idle" | "loading" | "done";
 
 export function ProductCard({ product }: { product: Product }) {
   const locale = useLocale();
   const t = useTranslations("shop");
-  const router = useRouter();
-  const [cartStatus, setCartStatus] = useState<ActionStatus>("idle");
-  const [wishlistStatus, setWishlistStatus] = useState<ActionStatus>("idle");
+  const cart = useCart();
+  const wishlist = useWishlist();
 
   const image = product.images[0]?.url;
   const inStock = product.stockQuantity > 0;
@@ -30,29 +28,14 @@ export function ProductCard({ product }: { product: Product }) {
   const discounted = hasDiscount(product);
   const description = productDescription(product, locale);
 
-  async function quickAction(
-    event: MouseEvent,
-    path: string,
-    status: ActionStatus,
-    setStatus: (status: ActionStatus) => void,
-  ) {
+  const line = cart.getLine(product.id);
+  const cartBusy = cart.isPending(product.id);
+  const wishlistBusy = wishlist.isPending(product.id);
+  const saved = wishlist.has(product.id);
+
+  function stop(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    if (status !== "idle") return;
-
-    setStatus("loading");
-    const res = await fetch(path, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ productId: product.id, quantity: 1 }),
-    });
-
-    if (res.status === 401 || res.status === 403) {
-      router.push("/login");
-      return;
-    }
-    setStatus(res.ok ? "done" : "idle");
-    if (res.ok && path.includes("/cart")) emitCartUpdated();
   }
 
   return (
@@ -81,23 +64,69 @@ export function ProductCard({ product }: { product: Product }) {
 
           <button
             type="button"
-            onClick={(event) => quickAction(event, "/api/backend/wishlist", wishlistStatus, setWishlistStatus)}
+            onClick={(event) => {
+              stop(event);
+              wishlist.toggle(product.id);
+            }}
             aria-label={t("product.addToWishlist")}
-            className="absolute top-3 z-10 flex size-10 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm transition-colors hover:text-destructive rtl:left-3 ltr:right-3"
+            disabled={wishlistBusy}
+            className="absolute top-3 z-10 flex size-10 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm transition-colors hover:text-destructive disabled:opacity-70 rtl:left-3 ltr:right-3"
           >
-            <Heart className={cn("size-5", wishlistStatus === "done" && "fill-current text-destructive")} />
+            {wishlistBusy ? (
+              <Loader2 className="size-5 animate-spin" />
+            ) : (
+              <Heart className={cn("size-5", saved && "fill-current text-destructive")} />
+            )}
           </button>
 
-          {inStock && (
-            <button
-              type="button"
-              onClick={(event) => quickAction(event, "/api/backend/cart", cartStatus, setCartStatus)}
-              aria-label={t("product.addToCart")}
-              className="absolute top-16 z-10 flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 rtl:left-3 ltr:right-3"
-            >
-              <ShoppingBag className="size-5" />
-            </button>
-          )}
+          {inStock &&
+            (line ? (
+              <div
+                className="absolute top-16 z-10 flex items-center gap-0.5 rounded-full bg-primary px-1 py-1 text-primary-foreground shadow-sm rtl:left-3 ltr:right-3"
+                onClick={stop}
+              >
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    stop(event);
+                    cart.setQuantity(product.id, line.quantity - 1);
+                  }}
+                  aria-label={t("product.decreaseQuantity")}
+                  disabled={cartBusy}
+                  className="flex size-7 items-center justify-center rounded-full transition-colors hover:bg-white/20 disabled:opacity-60"
+                >
+                  <Minus className="size-3.5" />
+                </button>
+                <span className="min-w-3 text-center text-xs font-semibold tabular-nums">
+                  {line.quantity}
+                </span>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    stop(event);
+                    cart.setQuantity(product.id, line.quantity + 1);
+                  }}
+                  aria-label={t("product.increaseQuantity")}
+                  disabled={cartBusy}
+                  className="flex size-7 items-center justify-center rounded-full transition-colors hover:bg-white/20 disabled:opacity-60"
+                >
+                  <Plus className="size-3.5" />
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={(event) => {
+                  stop(event);
+                  cart.addToCart(product.id);
+                }}
+                aria-label={t("product.addToCart")}
+                disabled={cartBusy}
+                className="absolute top-16 z-10 flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 disabled:opacity-70 rtl:left-3 ltr:right-3"
+              >
+                {cartBusy ? <Loader2 className="size-5 animate-spin" /> : <ShoppingBag className="size-5" />}
+              </button>
+            ))}
 
           <div className="absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-center bg-background/70 py-4 opacity-0 backdrop-blur-md transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
             <span className="inline-flex items-center gap-2 text-sm font-semibold text-foreground">

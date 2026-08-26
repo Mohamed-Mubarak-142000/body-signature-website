@@ -418,6 +418,8 @@
       "addedToCart": "Added to cart",
       "addToWishlist": "Add to wishlist",
       "addedToWishlist": "Added to wishlist",
+      "removedFromWishlist": "Removed from wishlist",
+      "actionFailed": "Something went wrong. Please try again.",
       "increaseQuantity": "Increase quantity",
       "decreaseQuantity": "Decrease quantity",
       "backToShop": "Back to shop",

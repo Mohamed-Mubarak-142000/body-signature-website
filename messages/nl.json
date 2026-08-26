@@ -418,6 +418,8 @@
       "addedToCart": "Toegevoegd aan winkelwagen",
       "addToWishlist": "Aan verlanglijst toevoegen",
       "addedToWishlist": "Toegevoegd aan verlanglijst",
+      "removedFromWishlist": "Verwijderd van verlanglijst",
+      "actionFailed": "Er is iets misgegaan. Probeer het opnieuw.",
       "increaseQuantity": "Aantal verhogen",
       "decreaseQuantity": "Aantal verlagen",
       "backToShop": "Terug naar shop",
