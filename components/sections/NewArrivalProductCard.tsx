@@ -107,7 +107,7 @@ export function NewArrivalProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <Link href={`/shop/${product.slug}`} className="group flex h-full w-40 shrink-0 flex-col items-center text-center sm:w-48">
+    <Link href={`/shop/${product.slug}`} className="group flex h-full w-full shrink-0 flex-col items-center text-center sm:w-48">
       <div className="relative aspect-square w-full overflow-hidden rounded-full bg-gradient-to-br from-gold-200 to-gold-400">
         {image && (
           // eslint-disable-next-line @next/next/no-img-element
