@@ -56,7 +56,7 @@ export function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <div className="h-full">
+    <div className="h-full min-w-0">
       <Link
         href={`/shop/${product.slug}`}
         className="group flex h-full flex-col overflow-hidden border border-border/70 bg-card"
@@ -83,9 +83,9 @@ export function ProductCard({ product }: { product: Product }) {
             type="button"
             onClick={(event) => quickAction(event, "/api/backend/wishlist", wishlistStatus, setWishlistStatus)}
             aria-label={t("product.addToWishlist")}
-            className="absolute top-3 z-10 flex size-8 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm transition-colors hover:text-destructive rtl:left-3 ltr:right-3"
+            className="absolute top-3 z-10 flex size-10 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm transition-colors hover:text-destructive rtl:left-3 ltr:right-3"
           >
-            <Heart className={cn("size-4", wishlistStatus === "done" && "fill-current text-destructive")} />
+            <Heart className={cn("size-5", wishlistStatus === "done" && "fill-current text-destructive")} />
           </button>
 
           {inStock && (
@@ -93,9 +93,9 @@ export function ProductCard({ product }: { product: Product }) {
               type="button"
               onClick={(event) => quickAction(event, "/api/backend/cart", cartStatus, setCartStatus)}
               aria-label={t("product.addToCart")}
-              className="absolute top-13 z-10 flex size-8 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm transition-colors hover:text-gold-600 rtl:left-3 ltr:right-3"
+              className="absolute top-16 z-10 flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 rtl:left-3 ltr:right-3"
             >
-              <ShoppingBag className={cn("size-4", cartStatus === "done" && "text-gold-600")} />
+              <ShoppingBag className="size-5" />
             </button>
           )}
 

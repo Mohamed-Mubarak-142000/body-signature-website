@@ -382,6 +382,7 @@
     "title": "Shop",
     "subtitle": "Products to support your routine, curated by Body Signature.",
     "allCategories": "All",
+    "filters": "Filters",
     "filterBy": "Categories",
     "empty": "No products in this category yet.",
     "emptyDescription": "Check back soon, or browse another category.",

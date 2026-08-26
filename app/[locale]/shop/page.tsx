@@ -1,8 +1,10 @@
-import { PackageSearch } from "lucide-react";
+import { Filter, PackageSearch } from "lucide-react";
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { ProductCard } from "@/components/sections/ProductCard";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import { ShopPagination } from "@/components/sections/ShopPagination";
@@ -103,58 +105,79 @@ export default async function ShopPage({
   const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
   const hasFilters = Boolean(activeCategory || query || minPrice || maxPrice);
 
+  const filterPanel = (
+    <>
+      <ShopSearchInput filters={filters} />
+
+      {categories.length > 0 && (
+        <div>
+          <h2 className="mb-4 font-heading text-lg text-foreground">{t("filterBy")}</h2>
+          <nav className="flex flex-wrap gap-2 md:flex-col md:gap-1">
+            <Link
+              href={{ pathname: "/shop", query: buildShopQuery({ ...filters, category: undefined }) }}
+              className={cn(
+                "border px-4 py-1.5 text-sm font-medium transition-colors md:border-0 md:px-0 md:py-1",
+                !activeCategory
+                  ? "border-gold-500 bg-gold-100 text-gold-700 md:bg-transparent md:font-semibold md:text-gold-600"
+                  : "border-border/70 text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {t("allCategories")}
+            </Link>
+            {categories.map((category) => (
+              <Link
+                key={category.id}
+                href={{
+                  pathname: "/shop",
+                  query: buildShopQuery({ ...filters, category: category.slug }),
+                }}
+                className={cn(
+                  "border px-4 py-1.5 text-sm font-medium transition-colors md:border-0 md:px-0 md:py-1",
+                  activeCategory === category.slug
+                    ? "border-gold-500 bg-gold-100 text-gold-700 md:bg-transparent md:font-semibold md:text-gold-600"
+                    : "border-border/70 text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {categoryName(category, locale)}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
+
+      <ShopPriceFilter filters={filters} />
+    </>
+  );
+
   return (
     <section className="mx-auto max-w-6xl px-6 pt-10 pb-20">
       <SectionHeader eyebrow={t("eyebrow")} subtitle={t("subtitle")} className="mb-10" />
 
-      <div className="mb-8 flex items-center justify-end gap-4">
-        <p className="text-sm whitespace-nowrap text-muted-foreground">
-          {t("resultsCount", { count: filtered.length })}
-        </p>
-        <ShopSortSelect filters={filters} />
+      <div className="mb-8 flex items-center justify-between gap-4 md:justify-end">
+        <Dialog>
+          <DialogTrigger
+            render={<Button variant="outline" size="sm" className="md:hidden" />}
+          >
+            <Filter className="size-3.5" />
+            {t("filters")}
+          </DialogTrigger>
+          <DialogContent className="max-h-[85vh] max-w-sm overflow-y-auto text-start">
+            <DialogTitle>{t("filters")}</DialogTitle>
+            <div className="mt-4 space-y-8">{filterPanel}</div>
+          </DialogContent>
+        </Dialog>
+
+        <div className="flex items-center gap-4">
+          <p className="text-sm whitespace-nowrap text-muted-foreground">
+            {t("resultsCount", { count: filtered.length })}
+          </p>
+          <ShopSortSelect filters={filters} />
+        </div>
       </div>
 
       <div className="grid gap-10 md:grid-cols-[240px_1fr]">
-        <aside className="space-y-8 md:sticky md:top-24 md:self-start md:border-e md:border-border/70 md:pe-8">
-          <ShopSearchInput filters={filters} />
-
-          {categories.length > 0 && (
-            <div>
-              <h2 className="mb-4 font-heading text-lg text-foreground">{t("filterBy")}</h2>
-              <nav className="flex flex-wrap gap-2 md:flex-col md:gap-1">
-                <Link
-                  href={{ pathname: "/shop", query: buildShopQuery({ ...filters, category: undefined }) }}
-                  className={cn(
-                    "border px-4 py-1.5 text-sm font-medium transition-colors md:border-0 md:px-0 md:py-1",
-                    !activeCategory
-                      ? "border-gold-500 bg-gold-100 text-gold-700 md:bg-transparent md:font-semibold md:text-gold-600"
-                      : "border-border/70 text-muted-foreground hover:text-foreground",
-                  )}
-                >
-                  {t("allCategories")}
-                </Link>
-                {categories.map((category) => (
-                  <Link
-                    key={category.id}
-                    href={{
-                      pathname: "/shop",
-                      query: buildShopQuery({ ...filters, category: category.slug }),
-                    }}
-                    className={cn(
-                      "border px-4 py-1.5 text-sm font-medium transition-colors md:border-0 md:px-0 md:py-1",
-                      activeCategory === category.slug
-                        ? "border-gold-500 bg-gold-100 text-gold-700 md:bg-transparent md:font-semibold md:text-gold-600"
-                        : "border-border/70 text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    {categoryName(category, locale)}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-          )}
-
-          <ShopPriceFilter filters={filters} />
+        <aside className="hidden space-y-8 md:sticky md:top-24 md:block md:self-start md:border-e md:border-border/70 md:pe-8">
+          {filterPanel}
         </aside>
 
         <div>
