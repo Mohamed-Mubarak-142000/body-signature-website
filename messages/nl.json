@@ -273,6 +273,7 @@
   "auth": {
     "orDivider": "of",
     "googleCta": "Doorgaan met Google",
+    "facebookCta": "Doorgaan met Facebook",
     "panelTagline": "Een persoonlijke aanpak voor gezondheid, schoonheid & balans — nu bewaard in uw account.",
     "showPassword": "Wachtwoord tonen",
     "hidePassword": "Wachtwoord verbergen",

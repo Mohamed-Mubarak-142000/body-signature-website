@@ -14,10 +14,11 @@ export default async function RegisterPage() {
   const t = await getTranslations("auth.register");
   const alt = await getTranslations("imageAlt");
   const googleEnabled = Boolean(process.env.GOOGLE_CLIENT_ID);
+  const facebookEnabled = Boolean(process.env.FACEBOOK_CLIENT_ID);
 
   return (
     <AuthShell namespace="auth.register" image="/images/about-2-v2.png" imageAlt={alt("about2")}>
-      <RegisterForm googleEnabled={googleEnabled} />
+      <RegisterForm googleEnabled={googleEnabled} facebookEnabled={facebookEnabled} />
       <p className="mt-6 text-center text-sm text-muted-foreground">
         {t("haveAccount")}{" "}
         <Link href="/login" className="font-medium text-gold-600 hover:text-gold-700">

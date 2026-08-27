@@ -14,10 +14,11 @@ export default async function LoginPage() {
   const t = await getTranslations("auth.login");
   const alt = await getTranslations("imageAlt");
   const googleEnabled = Boolean(process.env.GOOGLE_CLIENT_ID);
+  const facebookEnabled = Boolean(process.env.FACEBOOK_CLIENT_ID);
 
   return (
     <AuthShell namespace="auth.login" image="/images/about-1-v2.png" imageAlt={alt("about1")}>
-      <LoginForm googleEnabled={googleEnabled} />
+      <LoginForm googleEnabled={googleEnabled} facebookEnabled={facebookEnabled} />
       <div className="mt-6 flex flex-col items-center gap-2 text-sm text-muted-foreground">
         <Link href="/forgot-password" className="hover:text-foreground">
           {t("forgotPassword")}

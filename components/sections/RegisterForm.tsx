@@ -13,13 +13,20 @@ import { useRouter } from "@/i18n/navigation";
 
 type FormErrors = Partial<Record<"name" | "email" | "password", string>>;
 
-export function RegisterForm({ googleEnabled }: { googleEnabled: boolean }) {
+export function RegisterForm({
+  googleEnabled,
+  facebookEnabled,
+}: {
+  googleEnabled: boolean;
+  facebookEnabled: boolean;
+}) {
   const t = useTranslations("auth.register");
   const tAuth = useTranslations("auth");
   const router = useRouter();
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [googleSubmitting, setGoogleSubmitting] = useState(false);
+  const [facebookSubmitting, setFacebookSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
 
   const schema = z.object({
@@ -72,7 +79,12 @@ export function RegisterForm({ googleEnabled }: { googleEnabled: boolean }) {
     void signIn("google");
   }
 
-  const busy = submitting || googleSubmitting;
+  function handleFacebook() {
+    setFacebookSubmitting(true);
+    void signIn("facebook");
+  }
+
+  const busy = submitting || googleSubmitting || facebookSubmitting;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -122,23 +134,40 @@ export function RegisterForm({ googleEnabled }: { googleEnabled: boolean }) {
         {submitting ? t("sending") : t("submit")}
       </Button>
 
-      {googleEnabled && (
+      {(googleEnabled || facebookEnabled) && (
         <>
           <div className="relative py-2 text-center text-xs text-muted-foreground">
             <span className="bg-card px-2">{tAuth("orDivider")}</span>
             <div className="absolute inset-x-0 top-1/2 -z-10 h-px bg-border" />
           </div>
 
-          <Button
-            type="button"
-            variant="outline"
-            size="lg"
-            className="h-11 w-full text-sm"
-            disabled={busy}
-            onClick={handleGoogle}
-          >
-            {googleSubmitting ? tAuth("redirecting") : tAuth("googleCta")}
-          </Button>
+          <div className="space-y-3">
+            {googleEnabled && (
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="h-11 w-full text-sm"
+                disabled={busy}
+                onClick={handleGoogle}
+              >
+                {googleSubmitting ? tAuth("redirecting") : tAuth("googleCta")}
+              </Button>
+            )}
+
+            {facebookEnabled && (
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="h-11 w-full text-sm"
+                disabled={busy}
+                onClick={handleFacebook}
+              >
+                {facebookSubmitting ? tAuth("redirecting") : tAuth("facebookCta")}
+              </Button>
+            )}
+          </div>
         </>
       )}
     </form>

@@ -273,6 +273,7 @@
   "auth": {
     "orDivider": "or",
     "googleCta": "Continue with Google",
+    "facebookCta": "Continue with Facebook",
     "panelTagline": "A signature approach to health, beauty & balance — now saved to your account.",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
@@ -474,6 +475,11 @@
       "paymentMethod": "Payment method",
       "cod": "Cash on delivery",
       "manualTransfer": "Bank transfer",
+      "paymentProof": "Transfer receipt",
+      "paymentProofHint": "Upload a screenshot or photo of your bank transfer so we can verify your payment.",
+      "uploadProof": "Upload receipt",
+      "replaceProof": "Replace receipt",
+      "uploadingProof": "Uploading…",
       "orderSummary": "Order summary",
       "total": "Total",
       "submit": "Place order",
@@ -481,6 +487,8 @@
       "errors": {
         "addressRequired": "Please enter a delivery address.",
         "phoneRequired": "Please enter a phone number.",
+        "paymentProofRequired": "Please upload your bank transfer receipt.",
+        "uploadFailed": "Couldn't upload the image. Try a JPEG, PNG, WebP, or GIF under 5MB.",
         "submitFailed": "Couldn't place your order. Please try again."
       }
     },

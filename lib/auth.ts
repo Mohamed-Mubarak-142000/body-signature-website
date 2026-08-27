@@ -1,12 +1,42 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Facebook from "next-auth/providers/facebook";
 import Google from "next-auth/providers/google";
 
-// Customer session for the marketing site. Neither provider talks to a
-// local database — both end in a bearer token issued by the backend
+// Customer session for the marketing site. Neither OAuth provider talks to
+// a local database — both end in a bearer token issued by the backend
 // (zefaaf-body-signature-backend), stored in this app's own session and
 // attached to backend requests via lib/backend.ts's backendFetch().
 // See that repo's lib/auth-token.ts for why this isn't a shared cookie.
+
+// Shared by the signIn callback for both Google and Facebook — the two
+// backend endpoints (app/api/auth/google, app/api/auth/facebook) are
+// identical except for the provider name and the id field they expect.
+async function linkOAuthAccount(
+  provider: "google" | "facebook",
+  user: { id?: string; email?: string | null; name?: string | null; backendToken?: string },
+  providerAccountId: string,
+  profileName?: string | null,
+) {
+  const res = await fetch(`${process.env.BACKEND_URL}/api/auth/${provider}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-internal-secret": process.env.INTERNAL_API_SECRET ?? "",
+    },
+    body: JSON.stringify({
+      email: user.email,
+      name: user.name ?? profileName,
+      [`${provider}Id`]: providerAccountId,
+    }),
+  });
+  if (!res.ok) return false;
+
+  const data = await res.json();
+  user.id = data.user.id;
+  user.backendToken = data.token;
+  return true;
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
@@ -14,6 +44,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
+    Facebook({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
     }),
     Credentials({
       id: "credentials",
@@ -68,26 +102,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (account?.provider !== "google") return true;
-
-      const res = await fetch(`${process.env.BACKEND_URL}/api/auth/google`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-internal-secret": process.env.INTERNAL_API_SECRET ?? "",
-        },
-        body: JSON.stringify({
-          email: user.email,
-          name: user.name ?? profile?.name,
-          googleId: account.providerAccountId,
-        }),
-      });
-      if (!res.ok) return false;
-
-      const data = await res.json();
-      user.id = data.user.id;
-      user.backendToken = data.token;
-      return true;
+      if (account?.provider !== "google" && account?.provider !== "facebook") return true;
+      return linkOAuthAccount(account.provider, user, account.providerAccountId, profile?.name);
     },
     async jwt({ token, user }) {
       if (user) {
