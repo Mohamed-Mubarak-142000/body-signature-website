@@ -160,7 +160,7 @@ export function Header() {
               className="w-full border-none bg-background p-0 sm:max-w-sm"
             >
               <SheetTitle className="sr-only">{t("menu")}</SheetTitle>
-              <div className="flex h-full flex-col px-8 py-8">
+              <div className="flex h-full flex-col overflow-y-auto px-8 py-8">
                 <div className="flex items-center justify-between">
                   <span className="font-heading text-xl text-primary">
                     {brand("name")}
