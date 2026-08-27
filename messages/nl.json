@@ -475,6 +475,11 @@
       "paymentMethod": "Betaalmethode",
       "cod": "Betalen bij bezorging",
       "manualTransfer": "Bankoverschrijving",
+      "paymentProof": "Overschrijvingsbewijs",
+      "paymentProofHint": "Upload een screenshot of foto van uw overschrijving zodat wij uw betaling kunnen controleren.",
+      "uploadProof": "Bewijs uploaden",
+      "replaceProof": "Bewijs vervangen",
+      "uploadingProof": "Bezig met uploaden…",
       "orderSummary": "Besteloverzicht",
       "total": "Totaal",
       "submit": "Bestelling plaatsen",
@@ -482,6 +487,8 @@
       "errors": {
         "addressRequired": "Vul een bezorgadres in.",
         "phoneRequired": "Vul een telefoonnummer in.",
+        "paymentProofRequired": "Upload uw bankoverschrijvingsbewijs.",
+        "uploadFailed": "Uploaden van de afbeelding is mislukt. Probeer een JPEG, PNG, WebP of GIF onder 5MB.",
         "submitFailed": "Bestelling plaatsen is mislukt. Probeer het opnieuw."
       }
     },

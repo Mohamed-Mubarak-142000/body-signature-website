@@ -475,6 +475,11 @@
       "paymentMethod": "طريقة الدفع",
       "cod": "الدفع عند الاستلام",
       "manualTransfer": "تحويل بنكي",
+      "paymentProof": "إيصال التحويل",
+      "paymentProofHint": "ارفع صورة أو لقطة شاشة لتحويلك البنكي عشان نتأكد من عملية الدفع.",
+      "uploadProof": "رفع الإيصال",
+      "replaceProof": "استبدال الإيصال",
+      "uploadingProof": "جارٍ الرفع...",
       "orderSummary": "ملخص الطلب",
       "total": "الإجمالي",
       "submit": "تأكيد الطلب",
@@ -482,6 +487,8 @@
       "errors": {
         "addressRequired": "يرجى إدخال عنوان التوصيل.",
         "phoneRequired": "يرجى إدخال رقم الهاتف.",
+        "paymentProofRequired": "يرجى رفع إيصال التحويل البنكي.",
+        "uploadFailed": "تعذّر رفع الصورة. جرّب صورة JPEG أو PNG أو WebP أو GIF أقل من 5 ميجابايت.",
         "submitFailed": "تعذّر تنفيذ طلبك. يرجى المحاولة مرة أخرى."
       }
     },

@@ -1,7 +1,8 @@
 "use client";
 
+import { Loader2, Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -10,11 +11,16 @@ import { Label } from "@/components/ui/label";
 import { Link } from "@/i18n/navigation";
 import { emitCartUpdated } from "@/lib/cart-events";
 
-type FormErrors = Partial<Record<"shippingAddress" | "phone", string>>;
+type FormErrors = Partial<Record<"shippingAddress" | "phone" | "paymentProofUrl", string>>;
 
 export function CheckoutForm({ total }: { total: number }) {
   const t = useTranslations("shop.checkout");
   const tOrder = useTranslations("shop.orderConfirmed");
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "manual_transfer">("cod");
+  const [proofUrl, setProofUrl] = useState("");
+  const [uploadingProof, setUploadingProof] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(false);
@@ -24,7 +30,29 @@ export function CheckoutForm({ total }: { total: number }) {
     shippingAddress: z.string().trim().min(1, t("errors.addressRequired")),
     phone: z.string().trim().min(1, t("errors.phoneRequired")),
     paymentMethod: z.enum(["cod", "manual_transfer"]),
+    paymentProofUrl: z.string().optional(),
   });
+
+  async function handleProofFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    setUploadError(null);
+    setUploadingProof(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch("/api/backend/uploads/payment-proof", { method: "POST", body: formData });
+    setUploadingProof(false);
+
+    if (!res.ok) {
+      setUploadError(t("errors.uploadFailed"));
+      return;
+    }
+    const { url } = await res.json();
+    setProofUrl(url);
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -34,6 +62,7 @@ export function CheckoutForm({ total }: { total: number }) {
       shippingAddress: formData.get("shippingAddress"),
       phone: formData.get("phone"),
       paymentMethod: formData.get("paymentMethod"),
+      paymentProofUrl: proofUrl || undefined,
     });
 
     if (!result.success) {
@@ -43,6 +72,11 @@ export function CheckoutForm({ total }: { total: number }) {
         if (!fieldErrors[field]) fieldErrors[field] = issue.message;
       }
       setErrors(fieldErrors);
+      return;
+    }
+
+    if (result.data.paymentMethod === "manual_transfer" && !result.data.paymentProofUrl) {
+      setErrors({ paymentProofUrl: t("errors.paymentProofRequired") });
       return;
     }
 
@@ -116,13 +150,51 @@ export function CheckoutForm({ total }: { total: number }) {
         <select
           id="paymentMethod"
           name="paymentMethod"
-          defaultValue="cod"
+          value={paymentMethod}
+          onChange={(event) => setPaymentMethod(event.target.value as "cod" | "manual_transfer")}
           className="w-full border border-border/70 bg-background px-3 py-2 text-sm"
         >
           <option value="cod">{t("cod")}</option>
           <option value="manual_transfer">{t("manualTransfer")}</option>
         </select>
       </div>
+
+      {paymentMethod === "manual_transfer" && (
+        <div className="space-y-2 border border-border/70 bg-muted/40 p-4">
+          <Label>{t("paymentProof")}</Label>
+          <p className="text-xs text-muted-foreground">{t("paymentProofHint")}</p>
+
+          {proofUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={proofUrl} alt="" className="h-32 w-32 rounded-lg border border-border/70 object-cover" />
+          )}
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            className="hidden"
+            onChange={handleProofFile}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={uploadingProof}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {uploadingProof ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Upload className="size-4" />
+            )}
+            {uploadingProof ? t("uploadingProof") : proofUrl ? t("replaceProof") : t("uploadProof")}
+          </Button>
+
+          {uploadError && <p className="text-xs text-destructive">{uploadError}</p>}
+          {errors.paymentProofUrl && <p className="text-xs text-destructive">{errors.paymentProofUrl}</p>}
+        </div>
+      )}
 
       <div className="flex items-center justify-between border-t border-border/70 pt-4 text-sm">
         <span className="text-muted-foreground">{t("total")}</span>
@@ -131,8 +203,8 @@ export function CheckoutForm({ total }: { total: number }) {
 
       {submitError && <p className="text-sm text-destructive">{t("errors.submitFailed")}</p>}
 
-      <Button type="submit" size="lg" className="w-full" disabled={submitting}>
-        {submitting ? t("sending") : t("submit")}
+      <Button type="submit" size="lg" className="w-full" disabled={submitting || uploadingProof}>
+        {submitting ? t("sending") : uploadingProof ? t("uploadingProof") : t("submit")}
       </Button>
     </form>
   );
