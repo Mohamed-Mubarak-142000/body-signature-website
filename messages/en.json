@@ -85,6 +85,7 @@
       "title": "Book this service",
       "subtitle": "Pick a preferred time — our team will confirm your appointment.",
       "preferredTime": "Preferred date & time",
+      "selectTime": "Select a time",
       "submit": "Request booking",
       "sending": "Sending…",
       "successTitle": "Request received",

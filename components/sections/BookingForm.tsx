@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "@/i18n/navigation";
 
@@ -16,7 +16,7 @@ export function BookingForm({ serviceId }: { serviceId: string }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
-  const [minDate] = useState(() => new Date(Date.now() + 60 * 60 * 1000).toISOString().slice(0, 16));
+  const [minDate] = useState(() => new Date(Date.now() + 60 * 60 * 1000));
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -60,13 +60,13 @@ export function BookingForm({ serviceId }: { serviceId: string }) {
 
       <div className="mt-4 space-y-2">
         <Label htmlFor="requestedAt">{t("preferredTime")}</Label>
-        <Input
+        <DateTimePicker
           id="requestedAt"
-          type="datetime-local"
-          min={minDate}
           value={requestedAt}
-          onChange={(event) => setRequestedAt(event.target.value)}
-          required
+          onChange={setRequestedAt}
+          min={minDate}
+          placeholder={t("preferredTime")}
+          timeLabel={t("selectTime")}
         />
       </div>
 
