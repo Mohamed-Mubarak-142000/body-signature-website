@@ -12,27 +12,28 @@ import {
   SheetContent,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Link } from "@/i18n/navigation";
 import { useChat } from "@/lib/chat-context";
 import { cn } from "@/lib/utils";
 
 export function ChatWidget() {
   const { data: session } = useSession();
   const t = useTranslations("chat");
+  const tNav = useTranslations("nav");
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
   const { messages, unreadCount, sendMessage, markRead } = useChat();
   const listRef = useRef<HTMLDivElement>(null);
+  const signedIn = Boolean(session?.user);
 
   useEffect(() => {
-    if (open) markRead();
-  }, [open, markRead]);
+    if (open && signedIn) markRead();
+  }, [open, signedIn, markRead]);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
   }, [messages, open]);
-
-  if (!session?.user) return null;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -53,7 +54,8 @@ export function ChatWidget() {
         aria-label={t("openLabel")}
         className="fixed bottom-6 z-40 flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105 rtl:left-6 ltr:right-6"
       >
-        <MessageCircle className="size-6" />
+        <span className="absolute inset-0 rounded-full bg-primary/60 animate-ping" />
+        <MessageCircle className="relative size-6" />
         {unreadCount > 0 && (
           <span className="absolute -top-1 flex size-5 items-center justify-center rounded-full bg-destructive text-[11px] font-semibold text-destructive-foreground rtl:-left-1 ltr:-right-1">
             {unreadCount > 9 ? "9+" : unreadCount}
@@ -80,36 +82,50 @@ export function ChatWidget() {
             </SheetClose>
           </div>
 
-          <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto px-5 py-4">
-            {messages.length === 0 && (
-              <p className="text-sm text-muted-foreground">{t("empty")}</p>
-            )}
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  "max-w-[80%] rounded-2xl px-4 py-2 text-sm",
-                  message.senderRole === "customer"
-                    ? "ms-auto bg-primary text-primary-foreground"
-                    : "me-auto bg-muted text-foreground",
+          {signedIn ? (
+            <>
+              <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto px-5 py-4">
+                {messages.length === 0 && (
+                  <p className="text-sm text-muted-foreground">{t("empty")}</p>
                 )}
-              >
-                {message.body}
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={cn(
+                      "max-w-[80%] rounded-2xl px-4 py-2 text-sm",
+                      message.senderRole === "customer"
+                        ? "ms-auto bg-primary text-primary-foreground"
+                        : "me-auto bg-muted text-foreground",
+                    )}
+                  >
+                    {message.body}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-border/70 px-4 py-3">
-            <input
-              value={draft}
-              onChange={(event) => setDraft(event.target.value)}
-              placeholder={t("placeholder")}
-              className="h-10 flex-1 rounded-full border border-input bg-background px-4 text-sm outline-none focus:border-primary"
-            />
-            <Button type="submit" size="icon" className="size-10 shrink-0 rounded-full" disabled={sending || !draft.trim()} aria-label={t("send")}>
-              <Send className="size-4 rtl:-scale-x-100" />
-            </Button>
-          </form>
+              <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-border/70 px-4 py-3">
+                <input
+                  value={draft}
+                  onChange={(event) => setDraft(event.target.value)}
+                  placeholder={t("placeholder")}
+                  className="h-10 flex-1 rounded-full border border-input bg-background px-4 text-sm outline-none focus:border-primary"
+                />
+                <Button type="submit" size="icon" className="size-10 shrink-0 rounded-full" disabled={sending || !draft.trim()} aria-label={t("send")}>
+                  <Send className="size-4 rtl:-scale-x-100" />
+                </Button>
+              </form>
+            </>
+          ) : (
+            <div className="flex flex-1 flex-col items-center justify-center gap-4 px-5 py-4 text-center">
+              <p className="text-sm text-muted-foreground">{t("signInPrompt")}</p>
+              <SheetClose
+                nativeButton={false}
+                render={<Link href="/login" />}
+              >
+                <Button size="lg">{tNav("signIn")}</Button>
+              </SheetClose>
+            </div>
+          )}
         </SheetContent>
       </Sheet>
     </>
