@@ -81,6 +81,18 @@
     "detailCtaBody": "Reach out and we'll help you understand whether it's the right fit for you.",
     "detailCtaButton": "Contact us",
     "featuresTitle": "What to expect",
+    "booking": {
+      "title": "Book this service",
+      "subtitle": "Pick a preferred time — our team will confirm your appointment.",
+      "preferredTime": "Preferred date & time",
+      "submit": "Request booking",
+      "sending": "Sending…",
+      "successTitle": "Request received",
+      "successBody": "We've received your booking request and will confirm it shortly.",
+      "errors": {
+        "submitFailed": "Couldn't send your request. Please try again."
+      }
+    },
     "aestheticWomenEyebrow": "For Women",
     "aestheticWomenTitle": "Aesthetic Services for Women",
     "aestheticWomenSubtitle": "From facial treatments to laser and peeling, each service is delivered with an unhurried, personal touch.",
@@ -269,6 +281,15 @@
     "email": "hello@bodysignature.com",
     "hoursTitle": "Business hours",
     "hours": "Mon–Fri: 9:00–18:00, Sat: 10:00–14:00"
+  },
+  "chat": {
+    "title": "Chat with us",
+    "openLabel": "Open chat",
+    "closeLabel": "Close chat",
+    "placeholder": "Type a message…",
+    "send": "Send",
+    "empty": "Send us a message and our team will get back to you here.",
+    "signInPrompt": "Sign in to chat with our team."
   },
   "auth": {
     "orDivider": "or",

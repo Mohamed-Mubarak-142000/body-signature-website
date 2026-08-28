@@ -10,12 +10,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "@/i18n/navigation";
 import { emitCartUpdated } from "@/lib/cart-events";
+import { useCurrencyFormatter } from "@/lib/currency-context";
 
 type FormErrors = Partial<Record<"shippingAddress" | "phone" | "paymentProofUrl", string>>;
 
 export function CheckoutForm({ total }: { total: number }) {
   const t = useTranslations("shop.checkout");
   const tOrder = useTranslations("shop.orderConfirmed");
+  const formatCurrency = useCurrencyFormatter();
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "manual_transfer">("cod");
   const [proofUrl, setProofUrl] = useState("");
   const [uploadingProof, setUploadingProof] = useState(false);
@@ -198,7 +200,7 @@ export function CheckoutForm({ total }: { total: number }) {
 
       <div className="flex items-center justify-between border-t border-border/70 pt-4 text-sm">
         <span className="text-muted-foreground">{t("total")}</span>
-        <span className="text-lg font-medium text-foreground">{total.toFixed(2)}</span>
+        <span className="text-lg font-medium text-foreground">{formatCurrency(total)}</span>
       </div>
 
       {submitError && <p className="text-sm text-destructive">{t("errors.submitFailed")}</p>}

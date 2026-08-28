@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { SessionProvider } from "next-auth/react";
 import type { ReactNode } from "react";
 
+import { ChatWidget } from "@/components/chat/ChatWidget";
 import { PageLoader } from "@/components/effects/PageLoader";
 import { ScrollProgress } from "@/components/effects/ScrollProgress";
 import { Footer } from "@/components/layout/Footer";
@@ -14,8 +15,18 @@ import { WaveDivider } from "@/components/layout/WaveDivider";
 import { Toaster } from "@/components/ui/toast";
 import { routing } from "@/i18n/routing";
 import { auth } from "@/lib/auth";
+import { backendFetch } from "@/lib/backend";
 import { CartProvider } from "@/lib/cart-context";
+import { ChatProvider } from "@/lib/chat-context";
+import { CurrencyProvider } from "@/lib/currency-context";
 import { WishlistProvider } from "@/lib/wishlist-context";
+
+async function getCurrency(): Promise<string> {
+  const res = await backendFetch("/api/settings");
+  if (!res.ok) return "EUR";
+  const settings = await res.json();
+  return settings.currency ?? "EUR";
+}
 
 const inter = Inter({
   subsets: ["latin"],
@@ -69,7 +80,7 @@ export default async function LocaleLayout({
 
   const dir = locale === "ar" ? "rtl" : "ltr";
   const isArabic = locale === "ar";
-  const session = await auth();
+  const [session, currency] = await Promise.all([auth(), getCurrency()]);
 
   return (
     <html
@@ -88,17 +99,22 @@ export default async function LocaleLayout({
       <body className="flex min-h-screen flex-col bg-background font-sans text-foreground antialiased">
         <NextIntlClientProvider>
           <SessionProvider session={session}>
-            <CartProvider>
-              <WishlistProvider>
-                <PageLoader />
-                <ScrollProgress />
-                <Header />
-                <main className="flex-1">{children}</main>
-                <WaveDivider />
-                <Footer />
-                <Toaster />
-              </WishlistProvider>
-            </CartProvider>
+            <CurrencyProvider currency={currency}>
+              <CartProvider>
+                <WishlistProvider>
+                  <ChatProvider>
+                    <PageLoader />
+                    <ScrollProgress />
+                    <Header />
+                    <main className="flex-1">{children}</main>
+                    <WaveDivider />
+                    <Footer />
+                    <Toaster />
+                    <ChatWidget />
+                  </ChatProvider>
+                </WishlistProvider>
+              </CartProvider>
+            </CurrencyProvider>
           </SessionProvider>
         </NextIntlClientProvider>
       </body>

@@ -81,6 +81,18 @@
     "detailCtaBody": "Neem contact op en wij helpen u te bepalen of dit bij u past.",
     "detailCtaButton": "Neem contact op",
     "featuresTitle": "Wat u kunt verwachten",
+    "booking": {
+      "title": "Deze dienst boeken",
+      "subtitle": "Kies een gewenste tijd — ons team bevestigt uw afspraak.",
+      "preferredTime": "Gewenste datum & tijd",
+      "submit": "Boeking aanvragen",
+      "sending": "Bezig met verzenden…",
+      "successTitle": "Aanvraag ontvangen",
+      "successBody": "We hebben uw boekingsaanvraag ontvangen en bevestigen deze binnenkort.",
+      "errors": {
+        "submitFailed": "Uw aanvraag versturen is mislukt. Probeer het opnieuw."
+      }
+    },
     "aestheticWomenEyebrow": "Voor Vrouwen",
     "aestheticWomenTitle": "Schoonheidsbehandelingen voor Vrouwen",
     "aestheticWomenSubtitle": "Van gezichtsbehandelingen tot laser en peeling, elke behandeling met een persoonlijke, ontspannen aanpak.",
@@ -269,6 +281,15 @@
     "email": "hello@bodysignature.com",
     "hoursTitle": "Openingstijden",
     "hours": "Ma–vr: 9:00–18:00, za: 10:00–14:00"
+  },
+  "chat": {
+    "title": "Chat met ons",
+    "openLabel": "Chat openen",
+    "closeLabel": "Chat sluiten",
+    "placeholder": "Typ een bericht…",
+    "send": "Verstuur",
+    "empty": "Stuur ons een bericht en ons team reageert hier.",
+    "signInPrompt": "Log in om met ons team te chatten."
   },
   "auth": {
     "orDivider": "of",

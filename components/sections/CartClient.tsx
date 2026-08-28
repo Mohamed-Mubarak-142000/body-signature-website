@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Link, useRouter } from "@/i18n/navigation";
 import { emitCartUpdated } from "@/lib/cart-events";
+import { useCurrencyFormatter } from "@/lib/currency-context";
 import { productName } from "@/lib/shop-types";
 
 type CartItem = {
@@ -24,6 +25,7 @@ export function CartClient({ items }: { items: CartItem[] }) {
   const t = useTranslations("shop.cart");
   const locale = useLocale();
   const router = useRouter();
+  const formatCurrency = useCurrencyFormatter();
   const [busyId, setBusyId] = useState<string | null>(null);
 
   async function updateQuantity(itemId: string, quantity: number) {
@@ -85,7 +87,7 @@ export function CartClient({ items }: { items: CartItem[] }) {
           </div>
           <div className="flex-1">
             <p className="font-medium text-foreground">{productName(item.product, locale)}</p>
-            <p className="text-sm text-muted-foreground">{Number(item.product.price).toFixed(2)}</p>
+            <p className="text-sm text-muted-foreground">{formatCurrency(item.product.price)}</p>
           </div>
           <div className="flex items-center gap-2">
             <label htmlFor={`qty-${item.id}`} className="text-sm text-muted-foreground">
@@ -113,7 +115,7 @@ export function CartClient({ items }: { items: CartItem[] }) {
 
       <div className="flex items-center justify-between border-t border-border/70 pt-4">
         <span className="text-lg font-medium text-foreground">
-          {t("total")}: {total.toFixed(2)}
+          {t("total")}: {formatCurrency(total)}
         </span>
         <Button size="lg" onClick={() => router.push("/checkout")}>
           {t("checkout")}

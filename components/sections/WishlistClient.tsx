@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Link, useRouter } from "@/i18n/navigation";
+import { useCurrencyFormatter } from "@/lib/currency-context";
 import { hasDiscount, productName, type Product } from "@/lib/shop-types";
 
 type WishlistItem = { id: string; productId: string; product: Product };
@@ -16,6 +17,7 @@ export function WishlistClient({ items }: { items: WishlistItem[] }) {
   const tShop = useTranslations("shop");
   const locale = useLocale();
   const router = useRouter();
+  const formatCurrency = useCurrencyFormatter();
   const [busyId, setBusyId] = useState<string | null>(null);
 
   async function removeItem(productId: string) {
@@ -77,10 +79,10 @@ export function WishlistClient({ items }: { items: WishlistItem[] }) {
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="font-heading text-lg text-foreground">{productName(product, locale)}</h3>
                 <div className="mt-auto flex items-center gap-2 pt-4 text-sm font-medium">
-                  <span className="text-gold-600">{Number(product.price).toFixed(2)}</span>
+                  <span className="text-gold-600">{formatCurrency(product.price)}</span>
                   {discounted && (
                     <span className="text-muted-foreground line-through">
-                      {Number(product.compareAtPrice).toFixed(2)}
+                      {formatCurrency(product.compareAtPrice!)}
                     </span>
                   )}
                 </div>

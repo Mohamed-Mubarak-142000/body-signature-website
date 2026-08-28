@@ -8,6 +8,7 @@ import { ProductImageGallery } from "@/components/sections/ProductImageGallery";
 import { ReviewsSection, type Review } from "@/components/sections/ReviewsSection";
 import { auth } from "@/lib/auth";
 import { backendFetch } from "@/lib/backend";
+import { formatCurrency } from "@/lib/currency";
 import {
   LOW_STOCK_THRESHOLD,
   categoryName,
@@ -22,6 +23,13 @@ async function getProduct(slug: string): Promise<Product | null> {
   const res = await backendFetch(`/api/products/slug/${slug}`);
   if (!res.ok) return null;
   return res.json();
+}
+
+async function getCurrency(): Promise<string> {
+  const res = await backendFetch("/api/settings");
+  if (!res.ok) return "EUR";
+  const settings = await res.json();
+  return settings.currency ?? "EUR";
 }
 
 async function getRelatedProducts(product: Product): Promise<Product[]> {
@@ -61,9 +69,10 @@ export default async function ProductDetailPage({
   const t = await getTranslations("shop");
   const locale = await getLocale();
   const session = await auth();
-  const [related, { reviews, average, count }] = await Promise.all([
+  const [related, { reviews, average, count }, currency] = await Promise.all([
     getRelatedProducts(product),
     getReviews(product.id),
+    getCurrency(),
   ]);
 
   const images = product.images.map((img) => img.url);
@@ -85,10 +94,10 @@ export default async function ProductDetailPage({
             {productName(product, locale)}
           </h1>
           <div className="mt-3 flex items-center gap-3">
-            <p className="text-xl font-medium text-gold-600">{Number(product.price).toFixed(2)}</p>
+            <p className="text-xl font-medium text-gold-600">{formatCurrency(product.price, currency, locale)}</p>
             {discounted && (
               <p className="text-base text-muted-foreground line-through">
-                {Number(product.compareAtPrice).toFixed(2)}
+                {formatCurrency(product.compareAtPrice!, currency, locale)}
               </p>
             )}
           </div>
@@ -131,7 +140,7 @@ export default async function ProductDetailPage({
                   >
                     {variant.attribute}: {variant.value}
                     {Number(variant.priceModifier) !== 0 &&
-                      ` (${Number(variant.priceModifier) > 0 ? "+" : ""}${Number(variant.priceModifier).toFixed(2)})`}
+                      ` (${Number(variant.priceModifier) > 0 ? "+" : ""}${formatCurrency(variant.priceModifier, currency, locale)})`}
                   </span>
                 ))}
               </div>

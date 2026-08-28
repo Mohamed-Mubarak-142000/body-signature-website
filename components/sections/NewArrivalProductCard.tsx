@@ -6,6 +6,7 @@ import type { MouseEvent } from "react";
 
 import { Link } from "@/i18n/navigation";
 import { useCart } from "@/lib/cart-context";
+import { useCurrencyFormatter } from "@/lib/currency-context";
 import { LOW_STOCK_THRESHOLD, hasDiscount, productName, type Product } from "@/lib/shop-types";
 import { useWishlist } from "@/lib/wishlist-context";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,7 @@ export function NewArrivalProductCard({ product }: { product: Product }) {
   const t = useTranslations("shop");
   const cart = useCart();
   const wishlist = useWishlist();
+  const formatCurrency = useCurrencyFormatter();
 
   const image = product.images[0]?.url;
   const inStock = product.stockQuantity > 0;
@@ -51,10 +53,10 @@ export function NewArrivalProductCard({ product }: { product: Product }) {
       <div className="flex flex-1 flex-col items-center">
         <h3 className="mt-4 font-heading text-base text-foreground">{productName(product, locale)}</h3>
         <div className="mt-1 flex items-center gap-2 text-sm font-medium">
-          <span className="text-gold-600">{Number(product.price).toFixed(2)}</span>
+          <span className="text-gold-600">{formatCurrency(product.price)}</span>
           {discounted && (
             <span className="text-muted-foreground line-through">
-              {Number(product.compareAtPrice).toFixed(2)}
+              {formatCurrency(product.compareAtPrice!)}
             </span>
           )}
         </div>

@@ -4,11 +4,21 @@ import { notFound } from "next/navigation";
 
 import { Reveal } from "@/components/effects/Reveal";
 import { RevealImage } from "@/components/effects/RevealImage";
+import { BookingForm } from "@/components/sections/BookingForm";
 import { CTASection } from "@/components/sections/CTASection";
 import { allServices, getServiceMeta } from "@/content/services";
+import { backendFetch } from "@/lib/backend";
 
 export function generateStaticParams() {
   return allServices.map((service) => ({ slug: service.slug }));
+}
+
+type BookableService = { id: string; isBookable: boolean };
+
+async function getBookableService(slug: string): Promise<BookableService | null> {
+  const res = await backendFetch(`/api/services/slug/${slug}`);
+  if (!res.ok) return null;
+  return res.json();
 }
 
 export async function generateMetadata({
@@ -39,6 +49,7 @@ export default async function ServiceDetailPage({
   const t = await getTranslations("services");
   const alt = await getTranslations("imageAlt");
   const features = t.raw(`categories.${service.slug}.features`) as string[];
+  const bookableService = await getBookableService(service.slug);
 
   return (
     <>
@@ -69,6 +80,12 @@ export default async function ServiceDetailPage({
                 </li>
               ))}
             </ul>
+
+            {bookableService?.isBookable && (
+              <div className="mt-8">
+                <BookingForm serviceId={bookableService.id} />
+              </div>
+            )}
           </Reveal>
 
           <RevealImage
